@@ -1,4 +1,40 @@
-function Receive-DisaCertificate {
+<#
+ 
+ 
+ .Synopsis
+  Placeholder
+
+ .Description
+  Placeholder
+
+ .Parameter CSRFolderPath
+  Path to folder which contains the target CSR files.
+
+ .Parameter CA
+  URL for the Certificate Authority.
+
+ .Parameter SavePath
+  Path to folder which will contain the links CSV output file.
+
+ .Parameter RequestorName
+  Name of the individual requesting the certificate(s).
+
+ .Parameter RequestorEmail
+  Email address of the individual requesting the certificate(s).
+  
+ .Parameter RequestorPhone
+  Phone number of the individual requesting the certificates(s).
+
+ .Example
+   Placeholder
+
+ .Example
+   Placeholder
+
+ .Example
+   Placeholder
+#>
+function Request-DisaCertificate {
     [CmdletBinding()]
     param (
         # Folder Path for Certificate Requests
