@@ -91,7 +91,7 @@ Param(
             }
             $noName | Out-File -FilePath "$CSRPath\MissingHostNamesList.csv"
 
-            Write-Warning -Messahe "The Following Virtual Machines do not have a listed Hostname/DNS Name in vCenter. Please check that they have VMware tools installed, or correct the MissingHostNamesList.csv file in $CSRPath and rerun this Function using the -Source File and -FilePath parameters."
+            Write-Warning -Message "The Following Virtual Machines do not have a listed Hostname/DNS Name in vCenter. Please check that they have VMware tools installed, or correct the MissingHostNamesList.csv file in $CSRPath and rerun this Function using the -Source File and -FilePath parameters."
         }
         elseif ($Source -eq "File") {
             Set-Location $openssl
