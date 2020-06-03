@@ -30,9 +30,9 @@ Param(
 )
     DynamicParam {
         switch ($Source){
-            "$vCenter" {$paramName = "vCenterServer"}
-            "$Hostname" {$paramName = "Hostname"}
-            "$File" {$paramName = "FilePath"}
+            "vCenter" {$paramName = "vCenterServer"}
+            "Hostname" {$paramName = "Hostname"}
+            "File" {$paramName = "FilePath"}
         }
 
         $attributes = New-Object -TypeName System.Management.Automation.ParameterAttribute
