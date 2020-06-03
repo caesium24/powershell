@@ -18,9 +18,6 @@ Param(
     [String[]]
     $KeyPath,
     [Parameter(Mandatory=$true)]
-    [String[]]
-    $ConfigFilePath,
-    [Parameter(Mandatory=$true)]
     [ValidateSet('vCenter', 'Hostname', 'File')]
     [String[]]
     $Source,
@@ -83,7 +80,7 @@ Param(
             foreach ($vm in $vmList) {
                 if ($null -ne "$vm.HostName") {
                     $vmname =$vm.HostName.ToLower()
-                    .\openssl.exe req -config $ConfigFilePath -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vmname).key" -out "$($CSRPath)\$($vmname).csr" -subj /CN=$($vmname)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US
+                    .\openssl.exe req -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vmname).key" -out "$($CSRPath)\$($vmname).csr" -subj /CN=$($vmname)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US
                 }
                 else {
                     $noName += $vm.VmName
@@ -98,13 +95,13 @@ Param(
             $FilePath = $PSBoundParameters.FilePath
             $vmList = Import-Csv -Path "$FilePath"
             foreach ($vm in $vmList) {
-                .\openssl.exe req -config $ConfigFilePath -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vm).key" -out "$($CSRPath)\$($vm).csr" -subj /CN=$($vm)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US            
+                .\openssl.exe req -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vm).key" -out "$($CSRPath)\$($vm).csr" -subj /CN=$($vm)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US            
             }
         }
         elseif ($Source -eq "HostName") {
             Set-Location $openssl
             $HostName = $PSBoundParameters.HostName
-            .\openssl.exe req -config $ConfigFilePath -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($HostName).key" -out "$($CSRPath)\$($HostName).csr" -subj /CN=$($HostName)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US     
+            .\openssl.exe req -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($HostName).key" -out "$($CSRPath)\$($HostName).csr" -subj /CN=$($HostName)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US     
         }
         else {
             Write-Error "Could not create certificate requests based on the information provided."
