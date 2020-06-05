@@ -4,8 +4,44 @@
 Creates new SSL Certificate Requests and Keys using either vCenter, CSV, or user input to populate hostnames
 
     Version : 1.6
-    Author  : Eshton Brogan
+    Author  : Eshton Brogan & Sid Johnson
     Created : 09 October 2019
+    
+  .Synopsis
+  Placeholder
+
+ .Description
+  Placeholder
+
+ .Parameter CSRPath
+  File path for new CSR files to be generated.
+
+ .Parameter KeyPath
+  File path for new KEY files to be generated.
+
+ .Parameter Source
+  Parameter to choose between vCenter, Hostname, and File sources for certificate hostnames.
+  
+ .Parameter vCenterServer
+  If vCenter is selected as a source, this dynamic parameter specifies the vCenter server to source the certificate hostnames.
+  
+ .Parameter Hostname 
+  If Hostname is selected as a source, this dynamic parameter specifies the hostname of the certificate being generated.
+  
+ .Parameter FilePath
+  If File is selected as a source, this dynamic parameter specifies the CSV file which contains the certificate hostnames.
+  
+ .Parameter Credential
+  Credentials for vCenter if it is selected as a source.
+ 
+ .Example
+  Placeholder
+
+ .Example
+  Placeholder
+
+ .Example
+  Placeholder
 #>
 ########################################################################################################################################################################
 function New-CertificateRequest {
@@ -17,9 +53,6 @@ Param(
     [Parameter(Mandatory=$false)]
     [String[]]
     $KeyPath,
-    [Parameter(Mandatory=$true)]
-    [String[]]
-    $ConfigFilePath,
     [Parameter(Mandatory=$true)]
     [ValidateSet('vCenter', 'Hostname', 'File')]
     [String[]]
@@ -48,10 +81,12 @@ Param(
         return $paramDictionary
     }
     begin {
-        $openssl = where.exe /R 'C:\Program Files' openssl.exe | Select-Object -First 1
+        $openssl = 'C:\Program Files\OpenSSL-Win64\bin\openssl.exe'
+        #$openssl = where.exe /R 'C:\Program Files' openssl.exe | Select-Object -First 1
             if ($null -eq $openssl){
                 Write-Warning -Message "Openssl not found in C:\Program Files directory. Searching again in C:\"
-                $openssl = where.exe /R 'C:\' openssl.exe | Select-Object -First 1
+                #$openssl = where.exe /R 'C:\' openssl.exe | Select-Object -First 1
+                $openssl = 'C:\Program Files\OpenSSL-Win64\bin\openssl.exe'
                     if($null -eq $openssl){throw "Error: Openssl.exe not found on localhost"}
             }
             $openssl = $openssl.TrimEnd('openssl.exe')
@@ -83,7 +118,7 @@ Param(
             foreach ($vm in $vmList) {
                 if ($null -ne "$vm.HostName") {
                     $vmname =$vm.HostName.ToLower()
-                    .\openssl.exe req -config $ConfigFilePath -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vmname).key" -out "$($CSRPath)\$($vmname).csr" -subj #/CN=$($vmname)/%YOURINFO%/
+                    .\openssl.exe req -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vmname).key" -out "$($CSRPath)\$($vmname).csr" -subj /CN=$($vmname)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US
                 }
                 else {
                     $noName += $vm.VmName
@@ -98,13 +133,13 @@ Param(
             $FilePath = $PSBoundParameters.FilePath
             $vmList = Import-Csv -Path "$FilePath"
             foreach ($vm in $vmList) {
-                .\openssl.exe req -config $ConfigFilePath -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vm).key" -out "$($CSRPath)\$($vm).csr" -subj #/CN=$($vm)/%YOURINFO%/            
+                .\openssl.exe req -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vm).key" -out "$($CSRPath)\$($vm).csr" -subj /CN=$($vm)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US            
             }
         }
         elseif ($Source -eq "HostName") {
             Set-Location $openssl
             $HostName = $PSBoundParameters.HostName
-            .\openssl.exe req -config $ConfigFilePath -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($HostName).key" -out "$($CSRPath)\$($HostName).csr" -subj #/CN=$($HostName)/%YOURINFO%/            
+            .\openssl.exe req -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($HostName).key" -out "$($CSRPath)\$($HostName).csr" -subj /CN=$($HostName)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US     
         }
         else {
             Write-Error "Could not create certificate requests based on the information provided."

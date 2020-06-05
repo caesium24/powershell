@@ -44,7 +44,7 @@ function Receive-DisaCertificate {
 
     process {
     [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
-        foreach ($request om $requests){
+        foreach ($request in $requests){
             $csr = Get-Content -Path $request.VersionInfo.Filename -Raw
             $dns_name = $request.Name.TrimEnd('.csr')
             $body = @{
@@ -64,7 +64,7 @@ function Receive-DisaCertificate {
                 $obj = @(
                     [PSCustomObject]@{
                         Hostname = $dns_name
-                        RequesID = "$($CA)/ca/ee/ca/$($webresponse.links.href[2])"
+                        RequestID = "$($CA)/ca/ee/ca/$($webresponse.links.href[2])"
                     }
                     )
                 $links += $obj
