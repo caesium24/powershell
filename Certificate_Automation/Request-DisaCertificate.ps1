@@ -1,0 +1,85 @@
+function Receive-DisaCertificate {
+    [CmdletBinding()]
+    param (
+        # Folder Path for Certificate Requests
+        [Parameter(Mandatory=$true)]
+        [String]
+        $CSRFolderPath,
+        # URL to CA
+        [Parameter(Mandatory=$true)]
+        [String]
+        $CA,
+        # Save Path for Link File
+        [Parameter(Mandatory=$true)]
+        [String]
+        $SavePath,
+        # Requester's name
+        [Parameter(Mandatory=$true)]
+        [String]
+        $RequestorName,
+        # Requester's email
+        [Parameter(Mandatory=$true)]
+        [String]
+        $RequestorEmail,
+        # Requester's phone number
+        [Parameter(Mandatory=$true)]
+        [String]
+        $RequestorPhone
+    )
+    
+    begin{
+        $links = @()
+        $headers = @{
+            'Accept' = 'text/html, application/xhtml+xml, image/jxr, */*'
+            'Referer' = "$($CA)/ca/ee/ca/profileSelect?profileID=cspMultiSANCert"
+        }
+
+        if ((Test-Path -Path $CSRFolderPath -PathType Container) -eq $true){
+            $requests = Get-ChildItem -Path $CSRFolderPath | Where-Object {$_.Name.EndsWith('.csr') -eq $true}
+        }
+        else {
+            throw "Error: Folder path not found"
+        }
+    }
+
+    process {
+    [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
+        foreach ($request in $requests){
+            $csr = Get-Content -Path $request.VersionInfo.Filename -Raw
+            $dns_name = $request.Name.TrimEnd('.csr')
+            $body = @{
+                'cert_request_type' = 'pkcs10'
+                'cert_request' = $csr
+                'gnameValue1' = $dns_name
+                'requestor_name' = $RequestorName
+                'requestor_email' = $RequestorEmail
+                'requestor_phone' = $RequestorPhone
+                'profileID' = 'cspMultiSANCert'
+                'renewal' = 'false'
+                'xmlOutput' = 'false'
+            }
+
+            try {
+                Invoke-WebRequest -Uri "$($CA)/ca/ee/ca/profileSubmit" -Method Post -OutVariable webresponse -Headers $headers -Body $body -ErrorAction Stop
+                $obj = @(
+                    [PSCustomObject]@{
+                        Hostname = $dns_name
+                        RequestID = "$($CA)/ca/ee/ca/$($webresponse.links.href[2])"
+                    }
+                    )
+                $links += $obj
+            }
+            catch [System.Management.Automation.RuntimeException]{
+                Write-Warning -Message "Cannot resolve URI"
+            }
+        }
+    }
+    end {
+        if ((Test-Path -Path "$CSRFolderPath\links.csv" -PathType Leaf) -eq $true){
+            $links | Export-Csv -Path "$CSRFolderPath\links.csv -Append"
+        }
+        else {
+            $links | Export-Csv -Path "$CSRFolderPath\links.csv"
+        }
+    }
+}
