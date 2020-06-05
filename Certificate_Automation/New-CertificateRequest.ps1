@@ -6,6 +6,42 @@ Creates new SSL Certificate Requests and Keys using either vCenter, CSV, or user
     Version : 1.6
     Author  : Eshton Brogan & Sid Johnson
     Created : 09 October 2019
+    
+  .Synopsis
+  Placeholder
+
+ .Description
+  Placeholder
+
+ .Parameter CSRPath
+  File path for new CSR files to be generated.
+
+ .Parameter KeyPath
+  File path for new KEY files to be generated.
+
+ .Parameter Source
+  Parameter to choose between vCenter, Hostname, and File sources for certificate hostnames.
+  
+ .Parameter vCenterServer
+  If vCenter is selected as a source, this dynamic parameter specifies the vCenter server to source the certificate hostnames.
+  
+ .Parameter Hostname 
+  If Hostname is selected as a source, this dynamic parameter specifies the hostname of the certificate being generated.
+  
+ .Parameter FilePath
+  If File is selected as a source, this dynamic parameter specifies the CSV file which contains the certificate hostnames.
+  
+ .Parameter Credential
+  Credentials for vCenter if it is selected as a source.
+ 
+ .Example
+  Placeholder
+
+ .Example
+  Placeholder
+
+ .Example
+  Placeholder
 #>
 ########################################################################################################################################################################
 function New-CertificateRequest {
