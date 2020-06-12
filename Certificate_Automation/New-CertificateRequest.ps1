@@ -1,47 +1,47 @@
 ########################################################################################################################################################################
 <#
-
-Creates new SSL Certificate Requests and Keys using either vCenter, CSV, or user input to populate hostnames
-
+ .NOTES
     Version : 1.6
     Author  : Eshton Brogan & Sid Johnson
     Created : 09 October 2019
     
-  .Synopsis
-  Placeholder
+ .SYNOPSIS
+  Creates new SSL Certificate Requests and Keys using either vCenter, CSV, or user input to populate hostnames
 
- .Description
-  Placeholder
+ .DESCRIPTION
+  Based on user input, this function utilizes openssl to create CSR and KEY files. The user may choose to source their hostname(s)
+  from a vCenter Server, CSV file, or single hostname input from the console. When complete, the CSRPath and KeyPath parameters
+  provided by the user will contain the generated CSR and KEY files, respectively.
 
- .Parameter CSRPath
+ .PARAMETER CSRPath
   File path for new CSR files to be generated.
 
- .Parameter KeyPath
+ .PARAMETER KeyPath
   File path for new KEY files to be generated.
 
- .Parameter Source
+ .PARAMETER Source
   Parameter to choose between vCenter, Hostname, and File sources for certificate hostnames.
   
- .Parameter vCenterServer
+ .PARAMETER vCenterServer
   If vCenter is selected as a source, this dynamic parameter specifies the vCenter server to source the certificate hostnames.
   
- .Parameter Hostname 
+ .PARAMETER Hostname 
   If Hostname is selected as a source, this dynamic parameter specifies the hostname of the certificate being generated.
   
- .Parameter FilePath
+ .PARAMETER FilePath
   If File is selected as a source, this dynamic parameter specifies the CSV file which contains the certificate hostnames.
   
- .Parameter Credential
+ .PARAMETER Credential
   Credentials for vCenter if it is selected as a source.
  
  .Example
-  Placeholder
+  New-CertificateRequest -CSRPath "C:\temp\CSR" -KeyPath "C:\temp\KEY" -Source vCenter -vCenterServer VCSA01.site.com -Credential user.name
 
  .Example
-  Placeholder
+  New-CertificateRequest -CSRPath C:\temp\CSR -KeyPath C:\temp\KEY -Source File -FilePath C:\temp\Host_File.csv
 
  .Example
-  Placeholder
+  New-CertificateRequest -CSRPath C:\temp\CSR -KeyPath C:\temp\KEY -Source Hostname -Hostname host01.site.com
 #>
 ########################################################################################################################################################################
 function New-CertificateRequest {
