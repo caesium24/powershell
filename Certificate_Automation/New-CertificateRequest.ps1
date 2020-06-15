@@ -40,13 +40,13 @@
  .PARAMETER Credential
   Credentials for vCenter if it is selected as a source.
  
- .Example
+ .EXAMPLE
   New-CertificateRequest -CSRPath "C:\temp\CSR" -KeyPath "C:\temp\KEY" -Source vCenter -vCenterServer VCSA01.site.com -Credential user.name
   
- .Example
+ .EXAMPLE
   New-CertificateRequest -CSRPath C:\temp\CSR -KeyPath C:\temp\KEY -Source File -FilePath C:\temp\Host_File.csv
   
- .Example
+ .EXAMPLE
   New-CertificateRequest -CSRPath C:\temp\CSR -KeyPath C:\temp\KEY -Source Hostname -Hostname host01.site.com
 #>
 ########################################################################################################################################################################
