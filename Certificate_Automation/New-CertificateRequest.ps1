@@ -29,7 +29,13 @@
   If Hostname is selected as a source, this dynamic parameter specifies the hostname of the certificate being generated.
   
  .PARAMETER FilePath
-  If File is selected as a source, this dynamic parameter specifies the CSV file which contains the certificate hostnames.
+  If File is selected as a source, this dynamic parameter specifies the CSV file which contains the certificate hostnames. 
+  The CSV file must use the 'name' label for the hostname entries, and the hostnames must be fully qualified domain names.
+
+  EXAMPLE:
+    name
+    host01.site01.com
+    host02.site01.com
   
  .PARAMETER Credential
   Credentials for vCenter if it is selected as a source.
@@ -45,22 +51,22 @@
 #>
 ########################################################################################################################################################################
 function New-CertificateRequest {
-[CmdletBinding()]
-Param(
-    [Parameter(Mandatory=$true)]
-    [String[]]
-    $CSRPath,
-    [Parameter(Mandatory=$false)]
-    [String[]]
-    $KeyPath,
-    [Parameter(Mandatory=$true)]
-    [ValidateSet('vCenter', 'Hostname', 'File')]
-    [String[]]
-    $Source,
-    [Parameter(Mandatory=$false)]
-    [System.Management.Automation.PSCredential]
-    $Credential
-)
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory=$true)]
+        [String[]]
+        $CSRPath,
+        [Parameter(Mandatory=$false)]
+        [String[]]
+        $KeyPath,
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('vCenter', 'Hostname', 'File')]
+        [String[]]
+        $Source,
+        [Parameter(Mandatory=$false)]
+        [System.Management.Automation.PSCredential]
+        $Credential
+    )
     DynamicParam {
         switch ($Source){
             "vCenter" {$paramName = "vCenterServer"}
@@ -133,7 +139,7 @@ Param(
             $FilePath = $PSBoundParameters.FilePath
             $vmList = Import-Csv -Path "$FilePath"
             foreach ($vm in $vmList) {
-                .\openssl.exe req -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vm).key" -out "$($CSRPath)\$($vm).csr" -subj /CN=$($vm)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US            
+                .\openssl.exe req -nodes -newkey -rsa:2048 -sha256 -nodes -keyout "$($KeyPath)\$($vm.name).key" -out "$($CSRPath)\$($vm.name).csr" -subj /CN=$($vm.name)/OU=NSS/O=PKI/ST=DOD/L=U.S. Government/C=US            
             }
         }
         elseif ($Source -eq "HostName") {
