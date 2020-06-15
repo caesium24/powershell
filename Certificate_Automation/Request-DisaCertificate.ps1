@@ -1,4 +1,42 @@
-function Receive-DisaCertificate {
+<#
+ .NOTES
+    Version : 1.0
+    Author  : Eshton Brogan & Sid Johnson
+    Created : 15 June 2020
+    
+ .SYNOPSIS
+  Submits certificate requests to a DISA Certificate Authority website and returns a CSV containing links to the certificate request status pages.
+  
+ .DESCRIPTION
+  This function submits certificate requests to a DISA Certificate Authority website. Given a source for CSR files, each CSR is submitted
+  in turn to the user-supplied CA website along with the name, email address, and phone number of the requestor. As each request is
+  submitted, a CSV containing links to the status pages of each certificate request is populated for later use and output to the path
+  specified in the function.
+  
+ .PARAMETER CSRFolderPath
+  Folder path for the new CSR files to be generated.
+  
+ .PARAMETER CA
+  Base URL for the DISA Certificate Authority website.
+  
+ .PARAMETER SavePath
+  Folder path for the CSV containing links to the certificate request status pages.
+  
+ .PARAMETER RequestorName
+  Name of the person making the certificate request(s).
+  
+ .PARAMETER RequestorEmail 
+  Email address of the person making the certificate request(s).
+  
+ .PARAMETER RequestorPhone
+  Phone number of the person making the certificate request(s).
+  
+  NOTE: This parameter will only accept string input and must not contain dashes ( - ). See example for further detail. 
+ 
+ .EXAMPLE
+  Request-DisaCertificate -CSRFolderPath "C:\temp\CSR" -CA https://casite.csd.disa.mil -SavePath C:\temp -RequestorName "John Smith" -RequestorEmail "john.smith@navy.mil" -RequestorPhone "1235557890"
+#>
+function Request-DisaCertificate {
     [CmdletBinding()]
     param (
         # Folder Path for Certificate Requests
@@ -13,15 +51,15 @@ function Receive-DisaCertificate {
         [Parameter(Mandatory=$true)]
         [String]
         $SavePath,
-        # Requester's name
+        # Requestor's name
         [Parameter(Mandatory=$true)]
         [String]
         $RequestorName,
-        # Requester's email
+        # Requestor's email
         [Parameter(Mandatory=$true)]
         [String]
         $RequestorEmail,
-        # Requester's phone number
+        # Requestor's phone number
         [Parameter(Mandatory=$true)]
         [String]
         $RequestorPhone
