@@ -1,3 +1,46 @@
+<#
+ .NOTES
+    Version  : 1.0
+    Author   : Eshton Brogan & Sid Johnston
+    Created  : 15 June 2020
+ 
+ .SYNOPSIS
+  Generates a spreadsheet of certificate requests and their status which can be submitted to Trusted Agents for certificate request approval.
+
+ .DESCRIPTION
+  Utilizing user-provided information and a links CSV, this function outputs a spreadsheet which contains all data relevant to Trusted
+  Agents in a user-friendly format. 
+  
+ .PARAMETER CSRFilePath
+  File path containing source CSR(s).
+
+ .PARAMETER LinkFilePath
+  File path of links.csv which contains the status URL(s) for submitted certificate request(s).
+  
+ .PARAMETER CA
+  Name of the Certificate Authority which will issue the certificate(s).
+  
+ .PARAMETER Region
+  Name of the city or locality in which the certificate host(s) will reside.
+  
+ .PARAMETER Base
+  Name of the base or facility in which the certificate host(s) will reside.
+
+ .PARAMETER NetworkSysAdmin
+  Name of the person who requested the certificate(s).
+
+ .PARAMETER SystemOwner
+  Name of the project or program in which the certificate host(s) will reside.
+
+ .PARAMETER SecurityLevel
+  Classification level of the certificate host(s).
+
+ .PARAMETER ResolveDNSNames
+  Boolean switch to attempt to resolve DNS A records for source hostname(s).
+
+ .EXAMPLE
+  New-CertificateRequestTable -CSRFilePath "C:\temp\CSR" -LinkFilePath C:\temp\links.csv -CA "CA-1" -Region "Panama City" -Base "NSWC" -NetworkSysAdmin "John Smith" -SystemOwner "Site01, Panama City, FL" -SecurityLevel "UNCLASSIFIED" -ResolveDNSNames:$false 
+#>
 function New-CertificateRequestTable {
     [CmdletBinding()]
     param (
@@ -27,9 +70,9 @@ function New-CertificateRequestTable {
         [Parameter(Mandatory=$true)]
         [String]
         $SecurityLevel,
-        [Parameter(Mandatory=$true)]
-        [Switch]
-        $ResolveDNSNames
+        [Parameter(Mandatory=$false)]
+        [bool]
+        $ResolveDNSNames = $false
     )
 
     function Get-IndicesOf ($Array, $Value) {
@@ -51,13 +94,10 @@ function New-CertificateRequestTable {
                     if ($ResolveDNSNames -eq $true){
                         $ip = Test-NetConnection -ComputerName $request
                     }
-                    else {
-                        $ip.RemoteAddress.IPAddressToString = ''
-                    }
                 foreach ($el in $link_csv){
                     if($el.Hostname -eq $dns_name) {
                         $linkRequest = $el.RequestID
-                        $linkID = $linkRequest.TrimStart("https://nss-sw-ca-4.csd.disa.smil.mil/ca/ee/ca/checkRequest?requestID=")
+                        $linkID = ($linkRequest -split "=")[1]
                     }
                 }
 
@@ -68,7 +108,7 @@ function New-CertificateRequestTable {
                         RequestID = $linkID
                         RequestLink = $linkRequest
                         Hostname = $dns_name
-                        IPaddress = $ip.RemoteAddress.IPAddressToString
+                        IPaddress = $(if ($ResolveDNSNames -eq $true){$ip.RemoteAddress.IPAddressToString} else {''})
                         Region = $Region
                         Base = $Base
                         NetworkSysAdmin = $NetworkSysAdmin
