@@ -87,12 +87,10 @@ function New-CertificateRequest {
         return $paramDictionary
     }
     begin {
-        $openssl = 'C:\Program Files\OpenSSL-Win64\bin\openssl.exe'
-        #$openssl = where.exe /R 'C:\Program Files' openssl.exe | Select-Object -First 1
+        $openssl = where.exe /R 'C:\Program Files' openssl.exe | Select-Object -First 1
             if ($null -eq $openssl){
                 Write-Warning -Message "Openssl not found in C:\Program Files directory. Searching again in C:\"
-                #$openssl = where.exe /R 'C:\' openssl.exe | Select-Object -First 1
-                $openssl = 'C:\Program Files\OpenSSL-Win64\bin\openssl.exe'
+                $openssl = where.exe /R 'C:\' openssl.exe | Select-Object -First 1                
                     if($null -eq $openssl){throw "Error: Openssl.exe not found on localhost"}
             }
             $openssl = $openssl.TrimEnd('openssl.exe')
