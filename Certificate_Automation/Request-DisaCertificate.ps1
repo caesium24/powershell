@@ -113,11 +113,11 @@ function Request-DisaCertificate {
         }
     }
     end {
-        if ((Test-Path -Path "$CSRFolderPath\links.csv" -PathType Leaf) -eq $true){
-            $links | Export-Csv -Path "$CSRFolderPath\links.csv -Append"
+        if ((Test-Path -Path "$SavePath\links.csv" -PathType Leaf) -eq $true){
+            $links | Export-Csv -Path "$SavePath\links.csv -Append"
         }
         else {
-            $links | Export-Csv -Path "$CSRFolderPath\links.csv"
+            $links | Export-Csv -Path "$SavePath\links.csv"
         }
     }
 }
