@@ -69,7 +69,7 @@ function Request-DisaCertificate {
         $links = @()
         $headers = @{
             'Accept' = 'text/html, application/xhtml+xml, image/jxr, */*'
-            'Referer' = "$($CA)/ca/ee/ca/profileSelect?profileID=cspMultiSANCert"
+            'Referer' = "$($CA)/ca/ee/ca/profileSelect?profileId=cspMultiSANCert"
         }
 
         if ((Test-Path -Path $CSRFolderPath -PathType Container) -eq $true){
@@ -92,7 +92,7 @@ function Request-DisaCertificate {
                 'requestor_name' = $RequestorName
                 'requestor_email' = $RequestorEmail
                 'requestor_phone' = $RequestorPhone
-                'profileID' = 'cspMultiSANCert'
+                'profileId' = 'cspMultiSANCert'
                 'renewal' = 'false'
                 'xmlOutput' = 'false'
             }
