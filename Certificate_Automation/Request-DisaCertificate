@@ -5,7 +5,7 @@ function Receive-DisaCertificate {
         [Parameter(Mandatory=$true)]
         [String]
         $CSRFolderPath,
-        # URL to CA
+        # Certificate authority to be uses
         [Parameter(Mandatory=$true)]
         [String]
         $CA,
