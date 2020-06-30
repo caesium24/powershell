@@ -102,7 +102,7 @@ function Request-DisaCertificate {
                 $obj = @(
                     [PSCustomObject]@{
                         Hostname = $dns_name
-                        RequestID = "$($CA)/ca/ee/ca/$($webresponse.links.href[2])"
+                        RequestID = "$($CA)/ca/ee/ca/$($webresponse.links.href)"
                     }
                     )
                 $links += $obj
