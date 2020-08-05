@@ -13,6 +13,11 @@
   from a vCenter Server, CSV file, or single hostname input from the console. When complete, the CSRPath and KeyPath parameters
   provided by the user will contain the generated CSR and KEY files, respectively.
   
+  EXAMPLE CSV Format:
+    name
+    host01.site01.com
+    host02.site01.com
+  
   DYNAMIC PARAMETERS
   -vCenterServer
   If vCenter is selected as a source, this dynamic parameter specifies the vCenter server to source the certificate hostnames.
@@ -22,12 +27,7 @@
   
   -FilePath
   If File is selected as a source, this dynamic parameter specifies the CSV file which contains the certificate hostnames. 
-  The CSV file must use the 'name' label for the hostname entries, and the hostnames must be fully qualified domain names.
-
-  EXAMPLE:
-    name
-    host01.site01.com
-    host02.site01.com
+  The CSV file must use the 'name' label for the hostname entries, and the hostnames must be fully qualified domain names.  
   
  .PARAMETER CSRPath
   File path for new CSR files to be generated.
