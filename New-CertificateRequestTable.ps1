@@ -5,6 +5,10 @@ function New-CertificateRequestTable {
         [Parameter(Mandatory=$true)]
         [String]
         $CSRFilePath,
+        [Alias("SiteUrl")]
+        [Parameter(Mandatory=$true)]
+        [String]
+        $SiteUrl,
         [Alias("LinkPath")]
         [Parameter(Mandatory=$true)]
         [String]
@@ -57,7 +61,7 @@ function New-CertificateRequestTable {
                 foreach ($el in $link_csv){
                     if($el.Hostname -eq $dns_name) {
                         $linkRequest = $el.RequestID
-                        $linkID = $linkRequest.TrimStart("https://nss-sw-ca-4.csd.disa.smil.mil/ca/ee/ca/checkRequest?requestID=")
+                        $linkID = $linkRequest.TrimStart("https://$($SiteUrl)/ca/ee/ca/checkRequest?requestID=")
                     }
                 }
 
